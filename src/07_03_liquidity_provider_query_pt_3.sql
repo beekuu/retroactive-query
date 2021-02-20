@@ -189,24 +189,4 @@ SELECT *
 FROM with_balances
 )
 
--- COMBINE SUBADDRESS EARNINGS WITH ADDRESS EARNINGS FROM OTHER ADDRESSES
-
-,all_earnings AS (
-SELECT address, SUM(address_earned_delta) as earnings
-FROM lp_query_part_2
-WHERE address NOT IN (SELECT address FROM with_subaddress_earned_delta) 
-  AND address NOT IN (SELECT contract FROM uniswap_contracts)
-GROUP BY address
-UNION ALL
-SELECT subaddress as address, SUM(subaddress_earned_delta) as earnings
-FROM with_subaddress_earned_delta
-GROUP BY subaddress
-)
-SELECT address, SUM(earnings) AS earnings FROM all_earnings
-WHERE address != ''
-GROUP BY address
-ORDER BY 2 DESC
-
-);
-
 END;
