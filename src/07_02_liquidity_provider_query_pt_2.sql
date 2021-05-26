@@ -141,10 +141,14 @@ CREATE TABLE lp_query_part_2 AS (
     )
        ,with_address_earned_delta as (
         SELECT *,
-               CASE WHEN address="0x0000000000000000000000000000000000000000" THEN 0 ELSE ((coalesce(LAG(address_pool_share_balance, 1) OVER (PARTITION BY pair, address ORDER BY block_timestamp, log_index, delta_pool_shares), 0)) * ((reward_per_pool_share - coalesce(LAG(reward_per_pool_share, 1) OVER (PARTITION BY pair, address ORDER BY block_timestamp, log_index), 0)))) / POWER(10,18) END AS address_earned_delta
+               CASE WHEN address="0x0000000000000000000000000000000000000000" THEN 0 ELSE ((coalesce(LAG(
+                   , 1) OVER (PARTITION BY pair, address ORDER BY block_timestamp, log_index, delta_pool_shares), 0)) * ((reward_per_pool_share - coalesce(LAG(reward_per_pool_share, 1) OVER (PARTITION BY pair, address ORDER BY block_timestamp, log_index), 0)))) / POWER(10,18) END AS address_earned_delta
         FROM with_reward_per_pool_share)
 
-    SELECT * FROM with_address_earned_delta
+    --SELECT * FROM with_address_earned_delta
+    
+    --test1
+    SELECT * FROM with_pool_shares
 );
 
 END;
